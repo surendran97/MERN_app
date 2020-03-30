@@ -46,9 +46,9 @@ deleteExercise(id){
     .then(res=>alert(res.data));
 
     
-    this.setState({
-        exercises:this.state.exercises.filter(el=>el._id !== id)
-    })
+    // // this.setState({
+    // //     exercises:this.state.exercises.filter(el=>el._id !== id)
+    // })
     
 }
 

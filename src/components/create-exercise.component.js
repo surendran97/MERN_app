@@ -2,23 +2,23 @@ import React,{Component} from 'react';
 import DatePicker from 'react-datepicker'
 import axios from 'axios'
 import "react-datepicker/dist/react-datepicker.css"
-
-
+import  userImage from "../user2.png"
+import "../App.css"
 export default class CreateExercise extends Component{
     constructor(props){
         super(props);
     
-        this.onChangeUsername=this.onChangeUsername.bind(this);
-        this.onChangeDiscription=this.onChangeDiscription.bind(this);
-        this.onChangeDuration=this.onChangeDuration.bind(this);
-        this.onChangeDate=this.onChangeDate.bind(this);
+        this.onChangeHandle=this.onChangeHandle.bind(this);
+    this.checkError=this.checkError.bind(this)
+        
 this.onSubmit=this.onSubmit.bind(this)
         this.state={
             username:'',
             description:'',
             duration:0,
             date: new Date(),
-            users:[]
+            users:[],
+            error:{}
         }
     }
 
@@ -34,35 +34,51 @@ this.onSubmit=this.onSubmit.bind(this)
 
   })
 }
-    onChangeUsername(e){
+    onChangeHandle(e){
+        const name=e.target.name;
+        const value=e.target.value;
         this.setState({
-            username:e.target.value
-        })
-
+          [name]:value
+        },()=>{this.checkError(name)})
+      
     }
 
-
-    onChangeDiscription(e){
-        this.setState({
-            description:e.target.value
-        })
-
+    checkError(name){
+        var message = '';
+        switch(name){
+            case"username":
+            if (this.state[name].length<=3) {
+              message = "First name is required";
+            
+            }else {
+                if (!this.state[name].match('^[a-zA-Z\\s.]*$')) {
+                    message = "First name should be in alphabets";
+                }
+            }
+            break;
+            case"description":
+            if (this.state[name].length<=5) {
+              message = "First name is description";
+            
+            }
+            break;
+            default:
+                message=""
+               
+              
+            }
+            var errorMsg = this.state.error;
+            errorMsg[name] = message;
+            this.setState({
+                error: errorMsg
+            })
+            return message;
     }
+   
 
 
-    onChangeDuration(e){
-        this.setState({
-            duration:e.target.value
-        })
-
-    }
-
-
-    onChangeDate(date){
-        this.setState({
-            date:date
-        })
-    }
+   
+    
         onSubmit(e){
             e.preventDefault();
 
@@ -82,23 +98,26 @@ this.onSubmit=this.onSubmit.bind(this)
             .catch((err)=>err)
     
 
-           window.location='/'
+    
            
         }
 
       
     render(){
         return(
-            <div>
+            <div className="   pl-3 row">
+                <div class="col-6">
               <h3>Create New Exercise Log</h3>
               <form onSubmit={this.onSubmit}>
-                  <div className="form-group">
+                  <div className="form-group align-item-center row">
+                      <div class="col-12">
                       <label>UserName:</label>
                       <select ref="userInput"
                       required
-                      className="form-control"
+                      className="form-control form-control-sm"
+                      name="username"
                       value={this.state.username}
-                      onChange={this.onChangeUsername}>
+                      onChange={this.onChangeHandle}>
                           {
                               this.state.users.map((user)=>{
                                   return  <option
@@ -108,40 +127,57 @@ this.onSubmit=this.onSubmit.bind(this)
                           }
                       </select>
                   </div>
-                  <div className="form-group">
+                  </div>
+                  <div className="form-group align-item-center row">
+                  <div class="col-12">
                       <lable>Description:</lable>
                       <input type="text"
                       required
-                      className="form-control"
+                      name="description"
+                      className="form-control form-control-sm"
                       value={this.state.description}
-                      onChange={this.onChangeDiscription}/>
+                      onChange={this.onChangeHandle}/>
+                       <span className="error">{this.state.error.description}</span>
                   </div>
-                  <div className="form-group">
+                  </div>
+                  <div className="form-group align-item-center row">
+                  <div class="col-12">
                       <lable>Duration(in minutes):</lable>
                       <input type="text"
                       required
-                      className="form-control"
+                      name="duration"
+                      className="form-control form-control-sm"
                       value={this.state.duration}
-                      onChange={this.onChangeDuration}/>
+                      onChange={this.onChangeHandle}/>
                   </div>
-                  <div className="form-group">
+                  </div>
+                  <div className="form-group align-item-center row">
+                  <div class="col-12">
                       <lable>Date:</lable>
                      <div>
                          <DatePicker
+                         name="date"
                          selected={this.state.date}
                          onChange={
-                             this.onChangeDate
+                             this.onChangeHandle
                          }
                          />
                      </div>
+                     </div>
                   </div>
-                  <div className="form-group">
+                  <div className="form-group ">
                       <input type="submit" value="Create Exercise Log" className="btn btn-primary"/>
-
                   </div>
                   
               </form>
+             
+              </div>
+              
+              <div className=" col-6">
+                  <img src={userImage} className="img"></img>
+              </div>
             </div>
+          
         )
     }
 }
